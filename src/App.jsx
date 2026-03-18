@@ -5,12 +5,12 @@ import "./index.css";
 export default function App() {
   return (
     <main>
-      {/* Spacer so the about section isn't at the very top */}
+      {/* Spacer so the about section isn't at the very top
       <div style={{ height: "100vh", background: "#eceef5", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <p style={{ fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: "#666", opacity: 0.4 }}>
           Scroll Down ↓
         </p>
-      </div>
+      </div> */}
 
       {/* THE ANIMATION */}
       <LusionAboutSection />
