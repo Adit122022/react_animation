@@ -1,1 +1,19 @@
 @import "tailwindcss";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ 
+/* IMPORTANT: native scroll must stay enabled for scroll-sync to work */
+html {
+  scroll-behavior: auto;
+}
+ 
+body {
+  background: #eceef5;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+ 
