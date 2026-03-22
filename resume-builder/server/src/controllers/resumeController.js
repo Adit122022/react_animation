@@ -60,8 +60,7 @@ exports.getResume = async (req, res, next) => {
 // @access  Private
 exports.createResume = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.id);
-    console.log(user);
+    const user = await User.findById(req.user.id)
     // Check if user can create resume
     if (!user.canCreateResume()) {
       return res.status(403).json({
@@ -114,7 +113,7 @@ exports.updateResume = async (req, res, next) => {
     }
 
     resume = await Resume.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     });
 

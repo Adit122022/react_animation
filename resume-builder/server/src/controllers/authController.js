@@ -145,7 +145,7 @@ exports.updateDetails = async (req, res, next) => {
             req.user.id,
             fieldsToUpdate,
             {
-                new: true,
+                returnDocument: "after",
                 runValidators: true
             }
         );
