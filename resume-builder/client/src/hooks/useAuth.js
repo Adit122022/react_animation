@@ -5,8 +5,7 @@ export const useAuth = () => {
   
   const isAuthenticated = !!token && !!user;
   const isPremium = user?.subscription === 'premium';
-  const canCreateResume = user?.subscription === 'premium' || user?.resumeCount < 1;
-
+  const canCreateResume = user?.subscription === 'premium' || user?.resumeCount < 3;
   return {
     user,
     token,

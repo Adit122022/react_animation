@@ -148,7 +148,7 @@ const Templates = () => {
 
         if (!canCreateResume) {
             dispatch(showToast({
-                message: 'Free plan allows only 1 resume. Upgrade to Premium!',
+                message: 'Free plan allows only 3 resumes. Upgrade to Premium!',
                 type: 'warning',
             }));
             navigate('/pricing');

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = "/api/resume";
+const API_URL = "/api/resumes";
 
 const getAuthHeaders = (thunkAPI) => {
   const token = thunkAPI.getState().auth.token;
@@ -31,7 +31,7 @@ export const createResume = createAsyncThunk(
         resumeData,
         getAuthHeaders(thunkAPI),
       );
-      return response.data;
+      return response.data.resume;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
@@ -45,7 +45,7 @@ export const getResumes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(API_URL, getAuthHeaders(thunkAPI));
-      return response.data;
+      return response.data.resumes;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
@@ -62,7 +62,7 @@ export const getResume = createAsyncThunk(
         `${API_URL}/${id}`,
         getAuthHeaders(thunkAPI),
       );
-      return response.data;
+      return response.data.resume;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
@@ -80,7 +80,7 @@ export const updateResume = createAsyncThunk(
         data,
         getAuthHeaders(thunkAPI),
       );
-      return response.data;
+      return response.data.resume;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
@@ -115,7 +115,7 @@ export const duplicateResume = createAsyncThunk(
         {},
         getAuthHeaders(thunkAPI),
       );
-      return response.data;
+      return response.data.resume;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
@@ -165,9 +165,7 @@ const resumeSlice = createSlice({
       .addCase(getResumes.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.resumes = Array.isArray(action.payload)
-          ? action.payload
-          : action.payload.data || [];
+        state.resumes = action.payload || [];
       })
       .addCase(getResumes.rejected, (state, action) => {
         state.isLoading = false;

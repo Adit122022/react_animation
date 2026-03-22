@@ -23,7 +23,7 @@ const PricingPlans = () => {
         'Ads included',
       ],
       cta: 'Current Plan',
-      popular: false,
+      popular: true,
     },
     {
       name: 'Premium',
@@ -92,7 +92,7 @@ const PricingPlans = () => {
                 </span>
                 <span className="text-gray-500">/ {plan.period}</span>
               </div>
-              
+
               {plan.originalPrice && (
                 <div className="mt-2">
                   <span className="text-gray-400 line-through text-sm">
@@ -112,7 +112,7 @@ const PricingPlans = () => {
                   <span className="text-gray-700">{feature}</span>
                 </li>
               ))}
-              
+
               {plan.limitations?.map((limitation, idx) => (
                 <li key={idx} className="flex items-start gap-2 text-gray-400">
                   <X className="flex-shrink-0 mt-0.5" size={18} />
@@ -124,13 +124,12 @@ const PricingPlans = () => {
             <button
               onClick={() => plan.planType && initializePayment(plan.planType)}
               disabled={isProcessing || (plan.name === 'Free' && !isPremium)}
-              className={`w-full btn ${
-                plan.popular
+              className={`w-full btn ${plan.popular
                   ? 'btn-primary'
                   : plan.name === 'Free'
-                  ? 'btn-secondary cursor-not-allowed'
-                  : 'btn-outline'
-              }`}
+                    ? 'btn-secondary cursor-not-allowed'
+                    : 'btn-outline'
+                }`}
             >
               {isProcessing ? 'Processing...' : plan.cta}
             </button>

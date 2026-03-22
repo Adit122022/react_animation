@@ -34,7 +34,7 @@ const Toast = () => {
   };
 
   return (
-    <div className="fixed top-4 right-4 z-50 animate-slide-up">
+    <div className="fixed top-10 right-4 z-99 animate-slide-up">
       <div className={`flex items-center space-x-3 px-4 py-3 rounded-lg border ${bgColors[toast.type]} shadow-lg max-w-md`}>
         {icons[toast.type]}
         <p className="flex-1 text-gray-800 font-medium">{toast.message}</p>
