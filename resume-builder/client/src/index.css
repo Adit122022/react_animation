@@ -1,12 +1,39 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap");
+
+@theme {
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-heading: Poppins, ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card:
+    0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-card-hover:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
 
 @layer base {
   body {
     @apply bg-gray-50 text-gray-900 font-sans antialiased;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-heading;
   }
 }
@@ -16,27 +43,27 @@
   .btn {
     @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 inline-flex items-center justify-center gap-2;
   }
-  
+
   .btn-primary {
     @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-md hover:shadow-lg;
   }
-  
+
   .btn-secondary {
     @apply bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400;
   }
-  
+
   .btn-outline {
     @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-50;
   }
-  
+
   .btn-danger {
     @apply bg-red-600 text-white hover:bg-red-700;
   }
-  
+
   .btn-lg {
     @apply px-6 py-3 text-lg;
   }
-  
+
   .btn-sm {
     @apply px-3 py-1.5 text-sm;
   }
@@ -45,7 +72,7 @@
   .card {
     @apply bg-white rounded-xl shadow-card p-6 transition-shadow duration-200;
   }
-  
+
   .card-hover {
     @apply hover:shadow-card-hover;
   }
@@ -54,7 +81,7 @@
   .input {
     @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
   }
-  
+
   .input-error {
     @apply border-red-500 focus:ring-red-500;
   }
@@ -63,19 +90,19 @@
   .badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
   }
-  
+
   .badge-primary {
     @apply bg-primary-100 text-primary-800;
   }
-  
+
   .badge-success {
     @apply bg-green-100 text-green-800;
   }
-  
+
   .badge-warning {
     @apply bg-yellow-100 text-yellow-800;
   }
-  
+
   .badge-danger {
     @apply bg-red-100 text-red-800;
   }
@@ -84,11 +111,11 @@
   .section {
     @apply py-16;
   }
-  
+
   .section-title {
     @apply text-3xl md:text-4xl font-bold text-center mb-4;
   }
-  
+
   .section-subtitle {
     @apply text-lg text-gray-600 text-center max-w-2xl mx-auto mb-12;
   }
@@ -101,13 +128,13 @@
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-purple-600;
+    @apply bg-clip-text text-transparent bg-linear-to-r from-primary-600 to-purple-600;
   }
-  
+
   .gradient-bg {
-    @apply bg-gradient-to-r from-primary-600 to-purple-600;
+    @apply bg-linear-to-r from-primary-600 to-purple-600;
   }
-  
+
   .glass-effect {
     @apply bg-white/80 backdrop-blur-lg;
   }
@@ -142,7 +169,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Print Styles */
@@ -150,7 +179,7 @@
   body {
     @apply bg-white;
   }
-  
+
   .no-print {
     display: none !important;
   }

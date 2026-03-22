@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hideToast } from '@redux/slices/uiSlice';
+import { hideToast } from '../../store/slices/uiSlices';
 import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react';
 
 const Toast = () => {

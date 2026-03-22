@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { logout } from '@redux/slices/authSlice';
-import { useAuth } from '@hooks/useAuth';
+import { logout } from '../../store/slices/authSlice';
+import { useAuth } from '../../hooks/useAuth';
 import { Menu, X, User, LogOut, LayoutDashboard, CreditCard } from 'lucide-react';
 
 const Header = () => {
@@ -37,7 +37,7 @@ const Header = () => {
             <Link to="/pricing" className="text-gray-700 hover:text-primary-600 transition">
               Pricing
             </Link>
-            
+
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -64,7 +64,7 @@ const Header = () => {
                       <LayoutDashboard size={18} />
                       <span>Dashboard</span>
                     </Link>
-                    
+
                     {!isPremium && (
                       <Link
                         to="/pricing"

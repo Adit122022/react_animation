@@ -1,184 +1,245 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const API_URL = '/api/auth';
+const API_URL = "/api/resume";
 
-// Get user from localStorage
-const user = JSON.parse(localStorage.getItem('user'));
-const token = localStorage.getItem('token');
+const getAuthHeaders = (thunkAPI) => {
+  const token = thunkAPI.getState().auth.token;
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 const initialState = {
-  user: user || null,
-  token: token || null,
+  resumes: [],
+  currentResume: null,
   isLoading: false,
   isError: false,
   isSuccess: false,
-  message: '',
+  message: "",
 };
 
-// Register user
-export const register = createAsyncThunk(
-  'auth/register',
-  async (userData, thunkAPI) => {
+// Create new resume
+export const createResume = createAsyncThunk(
+  "resume/createResume",
+  async (resumeData, thunkAPI) => {
     try {
-      const response = await axios.post(`${API_URL}/register`, userData);
-      
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-      
+      const response = await axios.post(
+        API_URL,
+        resumeData,
+        getAuthHeaders(thunkAPI),
+      );
       return response.data;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
-// Login user
-export const login = createAsyncThunk(
-  'auth/login',
-  async (credentials, thunkAPI) => {
-    try {
-      const response = await axios.post(`${API_URL}/login`, credentials);
-      
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-      }
-      
-      return response.data;
-    } catch (error) {
-      const message = error.response?.data?.message || error.message;
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-// Logout
-export const logout = createAsyncThunk('auth/logout', async () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-});
-
-// Get current user
-export const getMe = createAsyncThunk(
-  'auth/getMe',
+// Get user resumes
+export const getResumes = createAsyncThunk(
+  "resume/getAll",
   async (_, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.token;
-      const response = await axios.get(`${API_URL}/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(API_URL, getAuthHeaders(thunkAPI));
       return response.data;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
-// Update user details
-export const updateDetails = createAsyncThunk(
-  'auth/updateDetails',
-  async (userData, thunkAPI) => {
+// Get single resume
+export const getResume = createAsyncThunk(
+  "resume/getOne",
+  async (id, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.token;
-      const response = await axios.put(`${API_URL}/updatedetails`, userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      
-      // Update localStorage
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      
+      const response = await axios.get(
+        `${API_URL}/${id}`,
+        getAuthHeaders(thunkAPI),
+      );
       return response.data;
     } catch (error) {
       const message = error.response?.data?.message || error.message;
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
-const authSlice = createSlice({
-  name: 'auth',
+// Update resume
+export const updateResume = createAsyncThunk(
+  "resume/update",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `${API_URL}/${id}`,
+        data,
+        getAuthHeaders(thunkAPI),
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
+// Delete resume
+export const deleteResume = createAsyncThunk(
+  "resume/delete",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.delete(
+        `${API_URL}/${id}`,
+        getAuthHeaders(thunkAPI),
+      );
+      return id;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
+// Duplicate resume
+export const duplicateResume = createAsyncThunk(
+  "resume/duplicate",
+  async (id, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/${id}/duplicate`,
+        {},
+        getAuthHeaders(thunkAPI),
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  },
+);
+
+const resumeSlice = createSlice({
+  name: "resume",
   initialState,
   reducers: {
     reset: (state) => {
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = false;
-      state.message = '';
+      state.message = "";
     },
-    updateUser: (state, action) => {
-      state.user = { ...state.user, ...action.payload };
-      localStorage.setItem('user', JSON.stringify(state.user));
+    clearCurrentResume: (state) => {
+      state.currentResume = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Register
-      .addCase(register.pending, (state) => {
+      // createResume
+      .addCase(createResume.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(createResume.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
+        // The API might return the created resume object with a structure, assume action.payload is the resume
+        // or action.payload.data depending on backend structure. usually action.payload directly for MERN API returning JSON directly.
+        // Assuming action.payload is the resume object
+        // Or if it's nested: action.payload.resume, wait let's just push what we get assuming it's the resume object.
+        state.resumes.push(action.payload);
       })
-      .addCase(register.rejected, (state, action) => {
+      .addCase(createResume.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
-      // Login
-      .addCase(login.pending, (state) => {
+
+      // getResumes
+      .addCase(getResumes.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(getResumes.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.resumes = Array.isArray(action.payload)
+          ? action.payload
+          : action.payload.data || [];
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(getResumes.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
       })
-      // Logout
-      .addCase(logout.fulfilled, (state) => {
-        state.user = null;
-        state.token = null;
-      })
-      // Get Me
-      .addCase(getMe.pending, (state) => {
+
+      // getResume
+      .addCase(getResume.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getMe.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.user = action.payload.user;
-      })
-      .addCase(getMe.rejected, (state) => {
-        state.isLoading = false;
-        state.user = null;
-        state.token = null;
-      })
-      // Update Details
-      .addCase(updateDetails.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(updateDetails.fulfilled, (state, action) => {
+      .addCase(getResume.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.user = action.payload.user;
+        state.currentResume = action.payload;
       })
-      .addCase(updateDetails.rejected, (state, action) => {
+      .addCase(getResume.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // updateResume
+      .addCase(updateResume.pending, (state) => {
+        // Usually we dont set isLoading=true for silent auto saves, but keeping basic structure
+        // state.isLoading = true;
+      })
+      .addCase(updateResume.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.currentResume = action.payload;
+        // also update it in the list
+        const index = state.resumes.findIndex(
+          (r) => r._id === action.payload._id,
+        );
+        if (index !== -1) {
+          state.resumes[index] = action.payload;
+        }
+      })
+      .addCase(updateResume.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // deleteResume
+      .addCase(deleteResume.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteResume.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.resumes = state.resumes.filter(
+          (resume) => resume._id !== action.payload,
+        );
+      })
+      .addCase(deleteResume.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+
+      // duplicateResume
+      .addCase(duplicateResume.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(duplicateResume.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.resumes.push(action.payload);
+      })
+      .addCase(duplicateResume.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -186,5 +247,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { reset, updateUser } = authSlice.actions;
-export default authSlice.reducer;
+export const { reset, clearCurrentResume } = resumeSlice.actions;
+export default resumeSlice.reducer;
